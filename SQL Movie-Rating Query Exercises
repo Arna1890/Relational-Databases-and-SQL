@@ -27,3 +27,19 @@ from Reviewer
 where rID in (select rID from Rating where ratingDate is null)
 
 Q5
+Write a query to return the ratings data in a more readable format: reviewer name, movie title, stars, and ratingDate. 
+Also, sort the data, first by reviewer name, then by movie title, and lastly by number of stars.
+
+select name, title, stars, ratingDate
+from Reviewer, Movie, Rating 
+where Rating.rID=Reviewer.rID and Rating.mID=Movie.mID
+order by name, title, stars
+
+Q6
+For all cases where the same reviewer rated the same movie twice and gave it a higher rating the second time, return the reviewer's name and the title of the movie.
+
+select Reviewer.name, Movie.title
+from Rating R1, Reviewer, Movie
+where R1.rID=Reviewer.rID and R1.mID=Movie.mID and exists (select * from Rating R2
+			 where R1.rID=R2.rID and R1.mID=R2.mID and R2.stars > R1.stars and R2.ratingDate>R1.ratingDate)
+       
