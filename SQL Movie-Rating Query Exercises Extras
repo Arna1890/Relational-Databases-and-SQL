@@ -16,3 +16,21 @@ inner join Reviewer on Rating.rid=Reviewer.rid
 inner join Movie on Rating.mid=Movie.mid
 Group by name
 HAVING name=director
+
+Q3
+Return all reviewer names and movie names together in a single list, alphabetized. (Sorting by the first name of 
+the reviewer and first word in the title is fine; no need for special processing on last names or removing "The".)
+
+SELECT DISTINCT name
+from Reviewer
+UNION ALL
+SELECT DISTINCT title
+from Movie
+ORDER by name
+
+Q4
+Find the titles of all movies not reviewed by Chris Jackson.
+
+SELECT title
+from Movie
+where mid not IN (SELECT DISTINCT mid from Rating where rid = 205 ORDER by mid)
