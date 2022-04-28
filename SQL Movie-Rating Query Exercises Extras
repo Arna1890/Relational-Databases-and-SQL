@@ -1,0 +1,8 @@
+Q1
+Find the names of all reviewers who rated Gone with the Wind.
+
+SELECT DISTINCT name
+from Reviewer
+inner join Rating on Reviewer.rid=Rating.rid
+Group by name
+HAVING mid=101
