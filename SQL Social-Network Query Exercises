@@ -18,21 +18,84 @@ where H1.grade >= H2.grade + 2
 
 
 Q3
+For every pair of students who both like each other, return the name and grade of both students. Include each pair only once, with the two names in alphabetical order.
+
+SELECT DISTINCT H1.name, H1.grade, H2.name, H2.grade
+from Highschooler H1
+inner JOIN Likes L on H1.id=L.id1
+INNER JOIN Highschooler H2 on L.id2=H2.id
+inner join Likes L2 on L2.id1=H2.id AND L2.ID2=H1.ID 
+where H1.name < H2.name
+order by H2.name, H1.name
 
 
 Q4
+Find all students who do not appear in the Likes table (as a student who likes or is liked) and return their names and grades. 
+Sort by grade, then by name within each grade.
 
+SELECT DISTINCT name, grade
+From Highschooler H
+Where h.ID not in 
+	(select id1 from Likes) 
+    and h.ID not in 
+    (Select id2 from Likes)
+order by grade, name
 
 Q5
+For every situation where student A likes student B, but we have no information about whom B likes 
+(that is, B does not appear as an ID1 in the Likes table), return A and B's names and grades.
 
+SELECT H1.name, H1.grade, H2.name, H2.grade
+from Highschooler H1
+inner JOIN Likes L on H1.id=L.id1
+INNER JOIN Highschooler H2 on L.id2=H2.id
+where H2.id not in 
+	(select id1 from Likes)
+    and H2.id in
+    (select id2 from Likes)
 
 Q6
+Find names and grades of students who only have friends in the same grade. Return the result sorted by grade, then by name within each grade.
 
+select name, grade
+from Highschooler H
+where (H.id in (Select id1 from Friend) or
+H.id in (Select id2 from Friend))
+and H.id not in (
+SELECT DISTINCT H1.id 
+from Highschooler H1
+inner JOIN Friend F on H1.id=F.id1
+inner JOIN Highschooler H2 on F.id2=H2.id and H2.grade <> H1.grade) 
+order by grade, name
 
 Q7
+For each student A who likes a student B where the two are not friends, find if they have a friend C in common (who can introduce them!). 
+For all such trios, return the name and grade of A, B, and C.
 
+SELECT DISTINCT H1.name, H1.grade, H2.name, H2.grade, H3.name, H3.grade
+from Highschooler H1
+inner JOIN Friend F1 on H1.id=F1.id1
+INNER JOIN Highschooler H3 on F1.id2=H3.id
+inner JOIN Likes L on H1.id=L.id1
+INNER JOIN Highschooler H2 on L.id2=H2.id and H2.ID NOT IN (
+  SELECT ID2
+  FROM Friend
+  WHERE ID1 = H1.ID
+)
+inner join Friend F2 on H2.ID = F2.ID1 AND H3.ID = F2.ID2
+order by 1, 2, 3
 
 Q8
+Find the difference between the number of students in the school and the number of different first names.
 
+SELECT COUNT(*) - COUNT(DISTINCT name)
+FROM Highschooler;
 
 Q9
+Find the name and grade of all students who are liked by more than one other student.
+
+SELECT name, grade
+FROM Highschooler
+INNER JOIN Likes ON Highschooler.ID = Likes.ID2
+GROUP BY ID2
+HAVING COUNT(*) > 1;
