@@ -3,3 +3,19 @@ It's time for the seniors to graduate. Remove all 12th graders from Highschooler
 
 delete from Highschooler
 where grade = 12
+
+Q2
+If two students A and B are friends, and A likes B but not vice-versa, remove the Likes tuple.
+
+delete from Likes
+where Id1 in (SELECT DISTINCT H1.id
+from Highschooler H1
+inner JOIN Friend F1 on H1.id=F1.id1
+INNER JOIN Highschooler H3 on F1.id2=H3.id
+inner JOIN Likes L on H1.id=L.id1
+INNER JOIN Highschooler H2 on L.id2=H2.id and H2.ID IN (
+  SELECT ID2
+  FROM Friend
+  WHERE ID1 = H1.ID
+)
+inner join Friend F2 on H2.ID = F2.ID1 AND H3.ID = F2.ID2)
